@@ -13,13 +13,15 @@ revision = '54e4ed17d063'
 down_revision = None
 branch_labels = None
 depends_on = None
+
+
 def create_todos_table():
     """method that will create "TODOItem" table """
     op.create_table(
         "todos",
         sa.Column("id", sa.Integer, primary_key=True, index=True),
         sa.Column("text", sa.String(150)),
-        sa.Column("owner_id", sa.Integer, nullable=False),
+        sa.Column("owner_id", sa.Integer, nullable=True),
         sa.Column("completed", sa.Boolean),
         sa.Column("created_on", sa.DateTime),
     )

@@ -1,5 +1,4 @@
-"""App entrypoint module"""
+"""App entry point module to start the application server"""
 from core.service import Application
 
-app = Application()
-application = app.run()
+application = Application.run()

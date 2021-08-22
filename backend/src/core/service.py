@@ -1,7 +1,7 @@
 """Module where all logic about  application initialization and configuration stays"""
 from fastapi import FastAPI
 
-from v1.api import api_router
+from api.api import api_router
 
 from .database.tasks import create_start_app_handler, create_stop_app_handler
 
@@ -9,7 +9,8 @@ from .database.tasks import create_start_app_handler, create_stop_app_handler
 class Application:
     """Class responsible for app initialization and all pre and post steps configuration"""
 
-    def run(self):
+    @staticmethod
+    def run():
         """Method responsible for post installation steps and running the application"""
 
         app = FastAPI()

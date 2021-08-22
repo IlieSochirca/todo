@@ -1,4 +1,5 @@
 """ Model Definition File"""
+from datetime import datetime
 from sqlalchemy import Column, Integer, String, Boolean, DateTime
 
 from src.core.database.base import Base
@@ -11,4 +12,4 @@ class TODOItem(Base):
     text = Column(String)
     owner_id = Column(Integer, foreign_key='users.id')
     completed = Column(Boolean, default=False)
-    created_on = Column(DateTime)
+    created_on = Column(DateTime, default=datetime.datetime.utcnow)
