@@ -1,0 +1,49 @@
+version: '3'
+services:
+  db:
+    image: postgres:11.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    networks:
+      - shared_network
+  service:
+    build: ./backend
+    volumes:
+      - "./backend/:/backend/"
+    ports:
+      - '${BACKEND_PORT}:8080'
+#    command: bash -c 'cd src/ && alembic upgrade head; uvicorn main:application --host 0.0.0.0 --port 8080 --reload'
+    command: bash -c 'cd src/ && uvicorn main:application --host 0.0.0.0 --port 8080 --reload'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - shared_network
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "5050:80"
+    networks:
+      - shared_network
+    restart: always
+volumes:
+  postgres_data:
+    # This config will bind postgres_data to the "/var/lib/postgresql/data/" directory in the container.
+
+networks:
+ shared_network:
+   driver: bridge
