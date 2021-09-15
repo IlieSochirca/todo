@@ -1,6 +1,7 @@
 """Module to specify all available routes for 'TODO' entity """
-from fastapi import APIRouter, Body, Depends
-from starlette.status import HTTP_201_CREATED
+from typing import List
+from fastapi import APIRouter, Body, Depends, HTTPException
+from starlette.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 
 from core.schemas.todo import TodoPublic, TodoCreate
 
@@ -23,3 +24,31 @@ async def create_todos(new_todo: TodoCreate = Body(...),
     """
     created_todo = await todo_repo.create_todo(new_todo=new_todo)
     return created_todo
+
+@todo_router.get("/get-todo", response_model=List[TodoPublic])
+async def get_all_todos(todo_repo: TodoRepository = Depends(get_repository(TodoRepository))) -> List[TodoPublic]:
+    """Method to be called to return all 'TODO' entities from DB"""
+    todos = await todo_repo.get_all_todos()
+    for i in todos:
+        print(i)
+    return todos
+
+
+@todo_router.get("/get-todo/{id}", response_model=TodoPublic)
+async def get_todo(id: int, todo_repo: TodoRepository = Depends(get_repository(TodoRepository))) -> TodoPublic:
+    """Method to be called to get the details of a 'TODO' entity from DB"""
+
+    todo = await todo_repo.get_todo_by_id(id=id)
+    if not todo:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="No TODO found with this id")
+    return todo
+
+@todo_router.delete("/remove-todo/{id}", status_code=HTTP_204_NO_CONTENT)
+async def remove_todo(id:int, todo_repo: TodoRepository = Depends(get_repository(TodoRepository))):
+    """Method to be called to delete a 'TODO' entity from DB"""
+    
+    todo = await todo_repo.get_todo_by_id(id=id)
+    if not todo:
+         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="No TODO found with this id")
+    
+    await todo_repo.delete_todo(id=id)
