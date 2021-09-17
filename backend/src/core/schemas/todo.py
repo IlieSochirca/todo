@@ -12,8 +12,8 @@ from typing import Optional
 class TodoBase(CoreModel):
     """Class that contains all shared attributes of a resource"""
     text: Optional[str]
-    # completed: bool
-    # created_on: datetime
+    #completed: bool
+    #created_on: datetime
 
     class Config:
         """The line 'orm_mode = True' allows the app to take ORM objects and translate them into responses automatically.

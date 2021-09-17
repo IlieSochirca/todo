@@ -1,8 +1,12 @@
 """Repository Module where is defined the layer of abstraction on top of database actions regarding 'TODO' Model"""
 from typing import List
 import datetime
+
+from fastapi import HTTPException
+from starlette.status import HTTP_400_BAD_REQUEST
+
 from .base import BaseRepository
-from core.schemas.todo import TodoCreate, TodoInDB
+from core.schemas.todo import TodoCreate, TodoUpdate, TodoInDB
 
 CREATE_QUERY = """
                 INSERT INTO todos (text, created_on, completed)
@@ -26,6 +30,16 @@ DELETE_QUERY = """
                 WHERE id = :id
                """
 
+UPDATE_QUERY = """
+                UPDATE todos  
+                SET text         = :text,
+                    completed    = :completed,
+                    created_on   = :created_on
+                WHERE id = :id
+                RETURNING id, text, created_on, completed
+                """
+
+
 class TodoRepository(BaseRepository):
     """All database actions related to 'TODO' Model"""
 
@@ -37,6 +51,23 @@ class TodoRepository(BaseRepository):
 
         return TodoInDB(**todo)
     
+    async def update_todo(self, *, id: int, todo_update: TodoUpdate) -> TodoInDB:
+        """Method used to update an specified row from DB"""
+        todo = await self.get_todo_by_id(id=id)
+        
+        if not todo:
+            return None
+       
+        todo_update_params = todo.copy(update=todo_update.dict(exclude_unset=True))
+        try:
+            updated_todo = await self.db.fetch_one(
+                                query=UPDATE_QUERY,
+                                values=todo_update_params.dict())
+            return TodoInDB(**updated_todo)
+        except Exception as e:
+            raise HTTPException(status_code=HTTP_400_BAD_REQUEST,
+                                detail="Invalid updated params")
+
     async def get_all_todos(self) -> List[TodoInDB]:
         """Method that retrieves all 'TODO' entities from DB"""
         todos = await self.db.fetch_all(query=GET_ALL_QUERY)
