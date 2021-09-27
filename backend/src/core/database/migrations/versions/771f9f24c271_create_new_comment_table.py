@@ -27,7 +27,9 @@ def create_comments_table():
 
         sa.Column("text", sa.String(150)), 
 
-        sa.Column("todo_id", sa.Integer, sa.ForeignKey("todos.id")), 
+        sa.Column("todo_id", sa.Integer),
+
+        sa.ForeignKeyConstraint(('todo_id',), ['todos.id'], ),
 
         sa.Column("created_on", sa.DateTime), 
 

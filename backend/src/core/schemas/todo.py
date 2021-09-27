@@ -6,14 +6,15 @@ from datetime import datetime
 
 from .core import CoreModel, IDMixinModel
 
-from typing import Optional
+from .comment import CommentInDB
+
+from typing import Optional, List
 
 
 class TodoBase(CoreModel):
     """Class that contains all shared attributes of a resource"""
     text: Optional[str]
-    #completed: bool
-    #created_on: datetime
+    comments: Optional[List[CommentInDB]]
 
     class Config:
         """The line 'orm_mode = True' allows the app to take ORM objects and translate them into responses automatically.
@@ -36,6 +37,7 @@ class TodoInDB(IDMixinModel, TodoBase):
     """Class that contains attributes present on any resource coming out of the database"""
     text: Optional[str]
     completed: bool
+    comments: Optional[List[CommentInDB]]
     created_on: datetime
 
 
@@ -44,3 +46,5 @@ class TodoPublic(IDMixinModel, TodoBase):
        from GET, POST, and PUT requests"""
     completed: bool
     created_on: datetime
+    comments: Optional[List[CommentInDB]]
+

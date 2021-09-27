@@ -1,6 +1,6 @@
 """Module that will contain schema definition for Comment object"""
 
-from datatime import datetime
+from datetime import datetime
 from .core import CoreModel, IDMixinModel
 
 from typing import Optional
@@ -21,6 +21,7 @@ class CommentBase(CoreModel):
 class CommentCreate(CoreModel):
     """Class that contains attributes required to create a new resource - used at POST requests"""
     text: Optional[str]
+    todo_id: int
 
 
 class CommentUpdate(CommentBase):
@@ -30,6 +31,8 @@ class CommentUpdate(CommentBase):
 
 class CommentInDB(IDMixinModel, CommentBase):
     """Class that contains attributes present on any resource coming out of the database"""
+    text: str
+    todo_id: int
     created_on: datetime
 
 
