@@ -66,7 +66,7 @@ class TodoRepository(BaseRepository):
         return TodoInDB(**todo)
 
     async def update_todo(self, *, id: int, todo_update: TodoUpdate) -> TodoInDB:
-        """Method used to update an specified row from DB"""
+        """Method that executes a call to DB and updates a specified row from DB"""
         todo = await self.get_todo_by_id(id=id)
 
         if not todo:

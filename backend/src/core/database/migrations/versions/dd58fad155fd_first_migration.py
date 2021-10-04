@@ -21,8 +21,9 @@ def create_todos_table():
         "todos",
         sa.Column("id", sa.Integer, primary_key=True, index=True),
         sa.Column("text", sa.String(150)),
-        sa.Column("owner_id", sa.Integer, nullable=True),
-        sa.Column("completed", sa.Boolean),
+        sa.Column("owner_id", sa.Integer, nullable=False),
+        sa.ForeignKeyConstraint(('owner_id',), ['users.id'], ),
+        sa.Column("completed", sa.Boolean, nullable=False),
         sa.Column("created_on", sa.DateTime),
     )
 

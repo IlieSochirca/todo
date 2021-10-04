@@ -9,10 +9,10 @@ from core.database.repositories.todo import TodoRepository
 
 from api.dependencies.database import get_repository
 
-todo_router = APIRouter()
+todos_router = APIRouter()
 
 
-@todo_router.post("/todos", response_model=TodoPublic, status_code=HTTP_201_CREATED)
+@todos_router.post("/todos", response_model=TodoPublic, status_code=HTTP_201_CREATED)
 async def create_todo(new_todo: TodoCreate = Body(...),
                       todo_repo: TodoRepository = Depends(get_repository(TodoRepository))) -> TodoPublic:
     """
@@ -26,7 +26,7 @@ async def create_todo(new_todo: TodoCreate = Body(...),
     return created_todo
 
 
-@todo_router.put("/todos/{id}", response_model=TodoPublic)
+@todos_router.put("/todos/{id}", response_model=TodoPublic)
 async def update_todo(id: int = Path(..., ge=1, title="The ID of the TODO to update"),
                       todo_update: TodoUpdate = Body(..., embed=True),
                       todo_repo: TodoRepository = Depends(get_repository(TodoRepository))) -> TodoPublic:
@@ -42,13 +42,13 @@ async def update_todo(id: int = Path(..., ge=1, title="The ID of the TODO to upd
     return updated_todo
 
 
-@todo_router.get("/todos", response_model=List[TodoPublic])
+@todos_router.get("/todos", response_model=List[TodoPublic])
 async def get_all_todos(todo_repo: TodoRepository = Depends(get_repository(TodoRepository))) -> List[TodoPublic]:
     """Method to be called to return all 'TODO' entities from DB"""
     return await todo_repo.get_all_todos()
 
 
-@todo_router.get("/todos/{id}", response_model=TodoPublic)
+@todos_router.get("/todos/{id}", response_model=TodoPublic)
 async def get_todo(id: int, todo_repo: TodoRepository = Depends(get_repository(TodoRepository))) -> TodoPublic:
     """Method to be called to get the details of a 'TODO' entity from DB"""
 
@@ -58,7 +58,7 @@ async def get_todo(id: int, todo_repo: TodoRepository = Depends(get_repository(T
     return todo
 
 
-@todo_router.delete("/todos/{id}", status_code=HTTP_204_NO_CONTENT)
+@todos_router.delete("/todos/{id}", status_code=HTTP_204_NO_CONTENT)
 async def remove_todo(id: int, todo_repo: TodoRepository = Depends(get_repository(TodoRepository))):
     """Method to be called to delete a 'TODO' entity from DB"""
 

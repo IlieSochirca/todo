@@ -5,10 +5,10 @@ from core.database.repositories.comment import CommentRepository
 from starlette.status import HTTP_201_CREATED
 from api.dependencies.database import get_repository
 
-comment_router = APIRouter()
+comments_router = APIRouter()
 
 
-@comment_router.post("/comments", response_model=CommentPublic, status_code=HTTP_201_CREATED)
+@comments_router.post("/comments", response_model=CommentPublic, status_code=HTTP_201_CREATED)
 async def create_comment(new_comment: CommentCreate = Body(...),
                          comment_repo: CommentRepository = Depends(get_repository(CommentRepository))) -> CommentPublic:
     """
